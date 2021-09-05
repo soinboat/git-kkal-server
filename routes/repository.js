@@ -8,7 +8,7 @@ const rimraf = require('rimraf');
 const createError = require('http-errors');
 
 const ERROR = require('../constants/errorConstants');
-const CONSTANTS = require('../constants/constants');
+const GIT = require('../constants/gitConstants');
 const { checkIfUrlHasDotGit, changeBranchNameFormat } = require('../utils');
 
 router.get('/', async (req, res, next) => {
@@ -21,7 +21,7 @@ router.get('/', async (req, res, next) => {
 
     const repoUrlLength = repoUrl.split('/').length;
 
-    if (repoUrlLength !== CONSTANTS.VALID_URL_LENGTH) {
+    if (repoUrlLength !== GIT.VALID_URL_LENGTH) {
       throw createError(401, ERROR.INVALID_REPO_URL);
     }
 
@@ -31,10 +31,10 @@ router.get('/', async (req, res, next) => {
       repoName = repoName.slice(0, -4);
     }
 
-    const logOption = [CONSTANTS.LOG_OPTION_ALL];
-    const cloneOption = [CONSTANTS.CLONE_OPTION_NO_CHECK_OUT];
+    const logOption = [GIT.LOG_OPTION_ALL];
+    const cloneOption = [GIT.CLONE_OPTION_NO_CHECK_OUT];
     const formatOptions = {
-      format: CONSTANTS.PRETTY_FORMAT_OPTIONS,
+      format: GIT.PRETTY_FORMAT_OPTIONS,
     };
 
     if (!repoUrl.trim()) {

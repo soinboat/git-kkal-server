@@ -1,4 +1,4 @@
-const CONSTANTS = {
+const GIT = {
   VALID_URL_LENGTH: 5,
   LOG_OPTION_ALL: '--all',
   CLONE_OPTION_NO_CHECK_OUT: '--no-checkout',
@@ -13,4 +13,4 @@ const CONSTANTS = {
   DOT_GIT: '.git',
 };
 
-module.exports = CONSTANTS;
+module.exports = GIT;

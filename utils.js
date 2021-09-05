@@ -1,8 +1,8 @@
 const { cloneDeep } = require('lodash');
-const CONSTANTS = require('./constants/constants');
+const GIT = require('./constants/gitConstants');
 
 function checkIfUrlHasDotGit(repoName) {
-  return repoName.slice(-4) === CONSTANTS.DOT_GIT;
+  return repoName.slice(-4) === GIT.DOT_GIT;
 }
 
 function changeBranchNameFormat(logList) {
