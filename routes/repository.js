@@ -60,7 +60,7 @@ router.get('/', async (req, res, next) => {
     const log = await clonedGit.log(logOption, formatOptions);
     const logList = log.all;
 
-    changeBranchNameFormat(logList);
+    const formattedLogList = changeBranchNameFormat(logList);
 
     if (!log) {
       throw createError(401, ERROR.FAIL_TO_LOG);
@@ -68,7 +68,7 @@ router.get('/', async (req, res, next) => {
 
     const data = {
       repoName,
-      branchList: logList,
+      branchList: formattedLogList,
     };
 
     await rimraf(`./${repoName}`, (err) => {

@@ -1,3 +1,4 @@
+const { cloneDeep } = require('lodash');
 const CONSTANTS = require('./constants/constants');
 
 function checkIfUrlHasDotGit(repoName) {
@@ -5,12 +6,16 @@ function checkIfUrlHasDotGit(repoName) {
 }
 
 function changeBranchNameFormat(logList) {
-  logList.forEach((log) => {
-    const arr = log.branchName.split('/');
+  const logListCopy = cloneDeep(logList).map((log) => {
+    const splittedBranchName = log.branchName.split('/');
 
-    // eslint-disable-next-line no-param-reassign
-    log.branchName = arr[arr.length - 1];
+    return {
+      ...log,
+      branchName: splittedBranchName[splittedBranchName.length - 1],
+    };
   });
+
+  return logListCopy;
 }
 
 module.exports = {
