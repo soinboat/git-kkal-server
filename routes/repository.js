@@ -12,49 +12,49 @@ const GIT = require('../constants/gitConstants');
 const { checkIfUrlHasDotGit, changeBranchNameFormat } = require('../utils');
 
 router.get('/', async (req, res, next) => {
+  const logOption = [GIT.LOG_OPTION_ALL];
+  const cloneOption = [GIT.CLONE_OPTION_NO_CHECK_OUT];
+  const formatOptions = {
+    format: GIT.PRETTY_FORMAT_OPTIONS,
+  };
+
   try {
     const { repoUrl } = req.body;
 
+    if (!repoUrl.trim()) {
+      throw createError(400, ERROR.INVALID_REPO_URL);
+    }
+
     if (!validator.isURL(repoUrl)) {
-      throw createError(401, ERROR.INVALID_REPO_URL);
+      throw createError(400, ERROR.INVALID_REPO_URL);
     }
 
     const repoUrlLength = repoUrl.split('/').length;
 
     if (repoUrlLength !== GIT.VALID_URL_LENGTH) {
-      throw createError(401, ERROR.INVALID_REPO_URL);
+      throw createError(400, ERROR.INVALID_REPO_URL);
     }
 
     let repoName = repoUrl.split('/')[4];
+
+    if (!repoName.trim()) {
+      throw createError(400, ERROR.INVALID_REPO_URL);
+    }
 
     if (checkIfUrlHasDotGit(repoName)) {
       repoName = repoName.slice(0, -4);
     }
 
-    const logOption = [GIT.LOG_OPTION_ALL];
-    const cloneOption = [GIT.CLONE_OPTION_NO_CHECK_OUT];
-    const formatOptions = {
-      format: GIT.PRETTY_FORMAT_OPTIONS,
-    };
-
-    if (!repoUrl.trim()) {
-      throw createError(401, ERROR.INVALID_REPO_URL);
-    }
-
-    if (!repoName.trim()) {
-      throw createError(401, ERROR.INVALID_REPO_URL);
-    }
-
     try {
       await simpleGit().clone(repoUrl, cloneOption);
     } catch (err) {
-      throw createError(401, ERROR.FAIL_TO_CLONE);
+      throw createError(500, ERROR.FAIL_TO_CLONE);
     }
 
     const clonedGit = await simpleGit(path.resolve(`./${repoName}`));
 
     if (!clonedGit) {
-      throw createError(401, ERROR.GIT_NOT_FOUND);
+      throw createError(400, ERROR.GIT_NOT_FOUND);
     }
 
     const log = await clonedGit.log(logOption, formatOptions);
@@ -73,7 +73,7 @@ router.get('/', async (req, res, next) => {
 
     rimraf(`./${repoName}`, (err) => {
       if (err) {
-        throw createError(401, ERROR.FAIL_TO_DELETE_CLONED_DIRECTORY);
+        throw createError(500, ERROR.FAIL_TO_DELETE_CLONED_DIRECTORY);
       }
     });
 
