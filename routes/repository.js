@@ -71,9 +71,9 @@ router.get('/', async (req, res, next) => {
       branchList: formattedLogList,
     };
 
-    await rimraf(`./${repoName}`, (err) => {
+    rimraf(`./${repoName}`, (err) => {
       if (err) {
-        next(err);
+        throw createError(401, ERROR.FAIL_TO_DELETE_CLONED_DIRECTORY);
       }
     });
 

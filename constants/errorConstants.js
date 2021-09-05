@@ -5,6 +5,7 @@ const ERROR = {
   INVALID_REPO_URL: 'Invalid repo URL',
   GIT_NOT_FOUND: 'Git not found',
   FAIL_TO_LOG: 'Failed to log',
+  FAIL_TO_DELETE_CLONED_DIRECTORY: 'Failed to delete cloned directory',
 };
 
 module.exports = ERROR;
