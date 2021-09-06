@@ -9,7 +9,7 @@ const createError = require('http-errors');
 
 const ERROR = require('../constants/errorConstants');
 const GIT = require('../constants/gitConstants');
-const { checkIfUrlHasDotGit, changeBranchNameFormat } = require('../utils');
+const { hasGitExtension, changeBranchNameFormat } = require('../utils');
 
 router.get('/', async (req, res, next) => {
   const logOption = [GIT.LOG_OPTION_ALL];
@@ -41,7 +41,7 @@ router.get('/', async (req, res, next) => {
       throw createError(400, ERROR.INVALID_REPO_URL);
     }
 
-    if (checkIfUrlHasDotGit(repoName)) {
+    if (hasGitExtension(repoName)) {
       repoName = repoName.slice(0, -4);
     }
 

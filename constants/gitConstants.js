@@ -10,7 +10,7 @@ const GIT = {
     hash: '%H',
     branchName: '%S',
   },
-  DOT_GIT: '.git',
+  GIT_EXTENSION: '.git',
 };
 
 module.exports = GIT;

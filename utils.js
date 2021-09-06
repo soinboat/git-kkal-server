@@ -1,12 +1,12 @@
 const { cloneDeep } = require('lodash');
 const GIT = require('./constants/gitConstants');
 
-function checkIfUrlHasDotGit(repoName) {
-  return repoName.slice(-4) === GIT.DOT_GIT;
+function hasGitExtension(repoName) {
+  return repoName.slice(-4) === GIT.GIT_EXTENSION;
 }
 
 function changeBranchNameFormat(logList) {
-  const logListCopy = cloneDeep(logList).map((log) => {
+  return cloneDeep(logList).map((log) => {
     const splittedBranchName = log.branchName.split('/');
 
     return {
@@ -14,11 +14,9 @@ function changeBranchNameFormat(logList) {
       branchName: splittedBranchName[splittedBranchName.length - 1],
     };
   });
-
-  return logListCopy;
 }
 
 module.exports = {
-  checkIfUrlHasDotGit,
+  hasGitExtension,
   changeBranchNameFormat,
 };
