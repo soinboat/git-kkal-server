@@ -5,10 +5,13 @@ const GIT = {
   PRETTY_FORMAT_OPTIONS: {
     message: '%s',
     author: '%an',
+    authoredTime: '%aI',
     committer: '%cn',
+    committedTime: '%cI',
     parents: '%P',
     hash: '%H',
-    branchName: '%S',
+    branchName1: '%d',
+    branchName2: '%S',
   },
   GIT_EXTENSION: '.git',
 };
