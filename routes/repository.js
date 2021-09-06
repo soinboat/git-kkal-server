@@ -7,8 +7,8 @@ const createError = require('http-errors');
 const router = express.Router();
 const repoUrlValidator = require('../middlewares/repoUrlValidator');
 const { changeBranchNameFormat, getRepoName } = require('../utils');
-const ERROR = require('../constants/errorConstants');
-const GIT = require('../constants/gitConstants');
+const ERROR = require('../constants/error');
+const GIT = require('../constants/git');
 
 router.get('/', repoUrlValidator, async (req, res, next) => {
   const logOption = [GIT.LOG_OPTION_ALL];

@@ -1,8 +1,8 @@
 const validator = require('validator');
 const createError = require('http-errors');
 
-const GIT = require('../constants/gitConstants');
-const ERROR = require('../constants/errorConstants');
+const GIT = require('../constants/git');
+const ERROR = require('../constants/error');
 const { getRepoName } = require('../utils');
 
 const repoUrlValidator = (req, res, next) => {

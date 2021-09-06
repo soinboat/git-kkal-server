@@ -1,4 +1,4 @@
-const ERROR = require('../constants/errorConstants');
+const ERROR = require('../constants/error');
 
 module.exports = (app) => {
   // error handler
