@@ -19,7 +19,7 @@ router.get('/', async (req, res, next) => {
   };
 
   try {
-    const { repoUrl } = req.body;
+    const { repoUrl } = req.query;
 
     if (!repoUrl.trim()) {
       throw createError(400, ERROR.INVALID_REPO_URL);
