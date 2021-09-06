@@ -1,6 +1,7 @@
 require('dotenv').config();
 const express = require('express');
 const createError = require('http-errors');
+const cors = require('cors');
 const loaders = require('./loaders');
 
 const repository = require('./routes/repository');
@@ -10,6 +11,13 @@ const errorHandler = require('./middlewares/errorHandler');
 const app = express();
 
 loaders(app, express);
+
+app.use(
+  cors({
+    origin: 'http://localhost:3000',
+    credentials: true,
+  })
+);
 
 app.use('/repository', repository);
 
