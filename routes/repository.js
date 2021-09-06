@@ -1,10 +1,10 @@
 const express = require('express');
 
 const router = express.Router();
+const fs = require('fs');
 const path = require('path');
 const simpleGit = require('simple-git');
 const validator = require('validator');
-const rimraf = require('rimraf');
 const createError = require('http-errors');
 
 const ERROR = require('../constants/errorConstants');
@@ -71,9 +71,9 @@ router.get('/', async (req, res, next) => {
       branchList: formattedLogList,
     };
 
-    rimraf(`./${repoName}`, (err) => {
+    fs.rmdir(`./${repoName}`, { recursive: true }, (err) => {
       if (err) {
-        throw createError(500, ERROR.FAIL_TO_DELETE_CLONED_DIRECTORY);
+        throw createError(401, ERROR.FAIL_TO_DELETE_CLONED_DIRECTORY);
       }
     });
 

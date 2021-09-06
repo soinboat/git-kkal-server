@@ -15,7 +15,6 @@
     "http-errors": "~1.6.3",
     "lodash": "^4.17.21",
     "morgan": "~1.9.1",
-    "rimraf": "^3.0.2",
     "simple-git": "^2.45.1",
     "validator": "^13.6.0"
   },
