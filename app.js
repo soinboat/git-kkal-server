@@ -12,7 +12,7 @@ loaders(app, express);
 
 app.use('/repository', repository);
 
-errorHandler(app);
 invalidUrlHandler(app);
+errorHandler(app);
 
 module.exports = app;
