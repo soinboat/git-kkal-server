@@ -1,18 +1,18 @@
 require('dotenv').config();
 const express = require('express');
 const loaders = require('./loaders');
-const errorHandler = require('./middlewares/errorHandler');
-const invalidUrlHandler = require('./middlewares/invalidUrlHandler');
+const errorHandler = require('./middlewares/invalidUrlHandler');
+const invalidUrlHandler = require('./middlewares/errorHandler');
 
-const indexRouter = require('./routes/index');
+const repository = require('./routes/repository');
 
 const app = express();
 
 loaders(app, express);
 
-app.use('/', indexRouter);
+app.use('/repository', repository);
 
-errorHandler(app);
 invalidUrlHandler(app);
+errorHandler(app);
 
 module.exports = app;
