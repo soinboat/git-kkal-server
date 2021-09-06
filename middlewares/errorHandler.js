@@ -1,3 +1,5 @@
+const ERROR = require('../constants/errorConstants');
+
 module.exports = (app) => {
   // error handler
   app.use((err, req, res) => {
@@ -7,6 +9,11 @@ module.exports = (app) => {
 
     // render the error page
     res.status(err.status || 500);
-    res.render('error');
+    res.json({
+      error:
+        req.app.get('env') === 'development'
+          ? res.locals.message
+          : ERROR.INTERNAL_SERVER_ERROR,
+    });
   });
 };
