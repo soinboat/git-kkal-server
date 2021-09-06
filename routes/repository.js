@@ -1,17 +1,16 @@
 const express = require('express');
-
-const router = express.Router();
 const fs = require('fs');
 const path = require('path');
 const simpleGit = require('simple-git');
-const validator = require('validator');
 const createError = require('http-errors');
 
+const router = express.Router();
+const repoUrlValidator = require('../middlewares/repoUrlValidator');
+const { changeBranchNameFormat, getRepoName } = require('../utils');
 const ERROR = require('../constants/errorConstants');
 const GIT = require('../constants/gitConstants');
-const { hasGitExtension, changeBranchNameFormat } = require('../utils');
 
-router.get('/', async (req, res, next) => {
+router.get('/', repoUrlValidator, async (req, res, next) => {
   const logOption = [GIT.LOG_OPTION_ALL];
   const cloneOption = [GIT.CLONE_OPTION_NO_CHECK_OUT];
   const formatOptions = {
@@ -21,29 +20,7 @@ router.get('/', async (req, res, next) => {
   try {
     const { repoUrl } = req.query;
 
-    if (!repoUrl.trim()) {
-      throw createError(400, ERROR.INVALID_REPO_URL);
-    }
-
-    if (!validator.isURL(repoUrl)) {
-      throw createError(400, ERROR.INVALID_REPO_URL);
-    }
-
-    const repoUrlLength = repoUrl.split('/').length;
-
-    if (repoUrlLength !== GIT.VALID_URL_LENGTH) {
-      throw createError(400, ERROR.INVALID_REPO_URL);
-    }
-
-    let repoName = repoUrl.split('/')[4];
-
-    if (!repoName.trim()) {
-      throw createError(400, ERROR.INVALID_REPO_URL);
-    }
-
-    if (hasGitExtension(repoName)) {
-      repoName = repoName.slice(0, -4);
-    }
+    const repoName = getRepoName(repoUrl);
 
     try {
       await simpleGit().clone(repoUrl, cloneOption);
