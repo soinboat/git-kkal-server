@@ -34,12 +34,11 @@ router.get('/', repoUrlValidator, async (req, res, next) => {
       throw createError(400, ERROR.GIT_NOT_FOUND);
     }
 
-    const log = await clonedGit.log(logOption, formatOptions);
-    const logList = log.all;
+    const { all: logList } = await clonedGit.log(logOption, formatOptions);
 
     const formattedLogList = changeBranchNameFormat(logList);
 
-    if (!log) {
+    if (!logList) {
       throw createError(401, ERROR.FAIL_TO_LOG);
     }
 
@@ -52,9 +51,9 @@ router.get('/', repoUrlValidator, async (req, res, next) => {
       if (err) {
         throw createError(401, ERROR.FAIL_TO_DELETE_CLONED_DIRECTORY);
       }
-    });
 
-    res.status(200).json(data);
+      res.status(200).json(data);
+    });
   } catch (err) {
     next(err);
   }
