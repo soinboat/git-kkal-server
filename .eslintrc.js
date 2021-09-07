@@ -8,5 +8,8 @@ module.exports = {
   parserOptions: {
     ecmaVersion: 12,
   },
-  rules: {},
+  rules: {
+    'consistent-return': 'off',
+  },
 };
+// eslint-disable-next-line consistent-return

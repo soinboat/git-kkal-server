@@ -9,14 +9,11 @@ const router = express.Router();
 const {
   changeBranchNameFormat,
   getRepoName,
-  getFileName,
-  getChangedFilePosition,
-  getDiff,
-  getChangedFileLog,
+  parseDiffToObject,
 } = require('../utils');
+const { getDiff } = require('./controller/repository.controller');
 const ERROR = require('../constants/error');
 const GIT = require('../constants/git');
-const REGEX = require('../constants/regex');
 const repoUrlValidator = require('../middlewares/repoUrlValidator');
 const STRING_PROCESSING = require('../constants/stringProcessing');
 
@@ -32,43 +29,18 @@ router.get('/diff', async (req, res, next) => {
   try {
     const { data } = await getDiff(url);
 
-    const [, ...fileList] = data.split(STRING_PROCESSING.DIFF_GIT);
+    const fileList = data.split(STRING_PROCESSING.DIFF_GIT).slice(1);
 
-    if (fileList.length < 1) {
+    if (!fileList.length) {
       throw createError(500, ERROR.FILE_NOT_FOUND);
     }
 
-    fileList.forEach((file) => {
-      const fileName = getFileName(file);
+    result.changedFileList = parseDiffToObject(fileList);
 
-      const changedFileInfoList = getChangedFilePosition(
-        file,
-        REGEX.FILE_LINE_OFFSET
-      );
-
-      const changedFileInfoAndLogList = getChangedFileLog(
-        file,
-        changedFileInfoList
-      );
-
-      const changedLog = changedFileInfoAndLogList.map(
-        ({ codeBeginHunk, before, after }) => ({
-          codeBeginHunk,
-          before,
-          after,
-        })
-      );
-
-      result.changedFileList.push({
-        fileName,
-        changedLog,
-      });
-    });
+    res.status(200).json(result);
   } catch (err) {
     next(err);
   }
-
-  res.status(200).json(result);
 });
 
 router.get('/', repoUrlValidator, async (req, res, next) => {

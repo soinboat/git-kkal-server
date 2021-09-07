@@ -1,8 +1,7 @@
-const axios = require('axios');
-const createError = require('http-errors');
 const { cloneDeep } = require('lodash');
-const ERROR = require('./constants/error');
+
 const GIT = require('./constants/git');
+const REGEX = require('./constants/regex');
 const { AT_SIGN_END, AT_SIGN_BEGIN } = require('./constants/stringProcessing');
 const STRING_PROCESSING = require('./constants/stringProcessing');
 
@@ -22,19 +21,6 @@ const changeBranchNameFormat = (logList) =>
       branchName2: splittedBranchName[splittedBranchName.length - 1],
     };
   });
-
-// eslint-disable-next-line consistent-return
-const getDiff = async (url) => {
-  try {
-    const data = await axios.get(url);
-
-    return data;
-  } catch (err) {
-    if (err.response) {
-      throw createError(500, ERROR.FAIL_TO_GET_DIFF);
-    }
-  }
-};
 
 const getFileName = (file) => {
   const result = file.split('\n')[0].split(' b/')[1];
@@ -76,12 +62,11 @@ const createFilePositionObject = (matchedString, before, after, index) => ({
 const getChangedFilePosition = (file, regex) => {
   const result = [];
 
-  const TRUE = true;
-  while (TRUE) {
+  function execRegexWhileNull() {
     const execResultArray = regex.exec(file);
 
     if (execResultArray === null) {
-      break;
+      return;
     }
 
     const [matchedString] = execResultArray;
@@ -102,7 +87,11 @@ const getChangedFilePosition = (file, regex) => {
     result.push(
       createFilePositionObject(matchedString, before, after, regex.lastIndex)
     );
+
+    execRegexWhileNull();
   }
+
+  execRegexWhileNull();
 
   return result;
 };
@@ -142,12 +131,39 @@ const getChangedFileLog = (file, changedFileInfoList) => {
   return result;
 };
 
+const parseDiffToObject = (fileList) => {
+  const changedFileList = [];
+
+  fileList.forEach((file) => {
+    const fileName = getFileName(file);
+
+    const changedFileInfoList = getChangedFilePosition(
+      file,
+      REGEX.FILE_LINE_OFFSET
+    );
+
+    const changedFileInfoAndLogList = getChangedFileLog(
+      file,
+      changedFileInfoList
+    );
+
+    const changedLog = changedFileInfoAndLogList.map(
+      ({ codeBeginHunk, before, after }) => ({
+        codeBeginHunk,
+        before,
+        after,
+      })
+    );
+
+    changedFileList.push({ fileName, changedLog });
+  });
+
+  return changedFileList;
+};
+
 module.exports = {
   hasGitExtension,
   getRepoName,
   changeBranchNameFormat,
-  getDiff,
-  getFileName,
-  getChangedFilePosition,
-  getChangedFileLog,
+  parseDiffToObject,
 };
