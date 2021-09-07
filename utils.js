@@ -107,6 +107,41 @@ const getChangedFilePosition = (file, regex) => {
   return result;
 };
 
+const divideLog = (logList) => {
+  const beforeLogList = logList.filter((log) => log[0] !== '+');
+  const afterLogList = logList.filter((log) => log[0] !== '-');
+
+  return { beforeLogList, afterLogList };
+};
+
+const getChangedFileLog = (file, changedFileInfoList) => {
+  const result = [...changedFileInfoList];
+
+  /* eslint no-plusplus: ["error", { "allowForLoopAfterthoughts": true }] */
+  for (let i = 0; i < result.length; i++) {
+    const currIndex = result[i].index;
+    const nextIndex =
+      i !== result.length - 1
+        ? result[i + 1].index - result[i + 1].matchedString.length
+        : undefined;
+
+    const [codeBeginHunk, ...logList] = file
+      .slice(currIndex, nextIndex)
+      .split('\n')
+      .slice(0, -1);
+
+    const { beforeLogList, afterLogList } = divideLog(logList);
+
+    result[i].codeBeginHunk = codeBeginHunk
+      ? codeBeginHunk.slice(1)
+      : codeBeginHunk;
+    result[i].before.logList = beforeLogList;
+    result[i].after.logList = afterLogList;
+  }
+
+  return result;
+};
+
 module.exports = {
   hasGitExtension,
   getRepoName,
@@ -114,4 +149,5 @@ module.exports = {
   getDiff,
   getFileName,
   getChangedFilePosition,
+  getChangedFileLog,
 };

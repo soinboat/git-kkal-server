@@ -12,6 +12,7 @@ const {
   getFileName,
   getChangedFilePosition,
   getDiff,
+  getChangedFileLog,
 } = require('../utils');
 const ERROR = require('../constants/error');
 const GIT = require('../constants/git');
@@ -44,6 +45,24 @@ router.get('/diff', async (req, res, next) => {
         file,
         REGEX.FILE_LINE_OFFSET
       );
+
+      const changedFileInfoAndLogList = getChangedFileLog(
+        file,
+        changedFileInfoList
+      );
+
+      const changedLog = changedFileInfoAndLogList.map(
+        ({ codeBeginHunk, before, after }) => ({
+          codeBeginHunk,
+          before,
+          after,
+        })
+      );
+
+      result.changedFileList.push({
+        fileName,
+        changedLog,
+      });
     });
   } catch (err) {
     next(err);
