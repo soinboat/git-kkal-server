@@ -10,10 +10,12 @@ const {
   changeBranchNameFormat,
   getRepoName,
   getFileName,
+  getChangedFilePosition,
   getDiff,
 } = require('../utils');
 const ERROR = require('../constants/error');
 const GIT = require('../constants/git');
+const REGEX = require('../constants/regex');
 const repoUrlValidator = require('../middlewares/repoUrlValidator');
 const STRING_PROCESSING = require('../constants/stringProcessing');
 
@@ -37,6 +39,11 @@ router.get('/diff', async (req, res, next) => {
 
     fileList.forEach((file) => {
       const fileName = getFileName(file);
+
+      const changedFileInfoList = getChangedFilePosition(
+        file,
+        REGEX.FILE_LINE_OFFSET
+      );
     });
   } catch (err) {
     next(err);
