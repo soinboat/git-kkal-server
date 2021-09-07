@@ -1,4 +1,7 @@
+const axios = require('axios');
+const createError = require('http-errors');
 const { cloneDeep } = require('lodash');
+const ERROR = require('./constants/error');
 const GIT = require('./constants/git');
 
 const hasGitExtension = (repoName) => repoName.slice(-4) === GIT.GIT_EXTENSION;
@@ -18,8 +21,22 @@ const changeBranchNameFormat = (logList) =>
     };
   });
 
+// eslint-disable-next-line consistent-return
+const getDiff = async (url) => {
+  try {
+    const data = await axios.get(url);
+
+    return data;
+  } catch (err) {
+    if (err.response) {
+      throw createError(500, ERROR.FAIL_TO_GET_DIFF);
+    }
+  }
+};
+
 module.exports = {
   hasGitExtension,
   getRepoName,
   changeBranchNameFormat,
+  getDiff,
 };

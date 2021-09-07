@@ -9,6 +9,7 @@
     "pre-commit": "lint-staged && rm -rf .git/hooks && ln -s ../.husky .git/hooks"
   },
   "dependencies": {
+    "axios": "^0.21.3",
     "cors": "^2.8.5",
     "debug": "~2.6.9",
     "dotenv": "^10.0.0",
