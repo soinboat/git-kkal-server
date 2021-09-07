@@ -88,23 +88,23 @@ const addPositionProperty = (
         };
       }
 
-      const sameBranchParentIndex = clonedLogList.findIndex(
+      const samePipeParentIndex = clonedLogList.findIndex(
         (targetLog) => targetLog.hash === parents[0]
       );
 
-      const otherBranchParentIndex = clonedLogList.findIndex(
+      const otherPipeParentIndex = clonedLogList.findIndex(
         (targetLog) => targetLog.hash === parents[1]
       );
 
       if (parents.length === 1) {
-        if (!clonedNodeData[sameBranchParentIndex]) {
-          clonedNodeData[sameBranchParentIndex] = {
+        if (!clonedNodeData[samePipeParentIndex]) {
+          clonedNodeData[samePipeParentIndex] = {
             position: clonedNodeData[index].position,
-            ...clonedLogList[sameBranchParentIndex],
+            ...clonedLogList[samePipeParentIndex],
           };
         } else {
-          clonedNodeData[sameBranchParentIndex].position = Math.min(
-            clonedNodeData[sameBranchParentIndex].position,
+          clonedNodeData[samePipeParentIndex].position = Math.min(
+            clonedNodeData[samePipeParentIndex].position,
             clonedNodeData[index].position
           );
 
@@ -124,24 +124,24 @@ const addPositionProperty = (
           }
         }
       } else if (parents.length === 2) {
-        if (!clonedNodeData[sameBranchParentIndex]) {
-          clonedNodeData[sameBranchParentIndex] = {
+        if (!clonedNodeData[samePipeParentIndex]) {
+          clonedNodeData[samePipeParentIndex] = {
             position: clonedNodeData[index].position,
-            ...clonedLogList[sameBranchParentIndex],
+            ...clonedLogList[samePipeParentIndex],
           };
         } else {
-          clonedNodeData[sameBranchParentIndex].position = Math.min(
-            clonedNodeData[sameBranchParentIndex].position,
+          clonedNodeData[samePipeParentIndex].position = Math.min(
+            clonedNodeData[samePipeParentIndex].position,
             clonedNodeData[index].position
           );
         }
 
-        if (!clonedNodeData[otherBranchParentIndex]) {
+        if (!clonedNodeData[otherPipeParentIndex]) {
           const newPosition = activatedPipeList.length;
           activatedPipeList[activatedPipeList.length] = newPosition;
-          clonedNodeData[otherBranchParentIndex] = {
+          clonedNodeData[otherPipeParentIndex] = {
             position: activatedPipeList[activatedPipeList.length - 1],
-            ...clonedLogList[otherBranchParentIndex],
+            ...clonedLogList[otherPipeParentIndex],
           };
         }
       }
