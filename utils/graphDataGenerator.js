@@ -1,35 +1,5 @@
 const GRAPH_COLOR_LIST = require('../constants/graphColorPalette');
 
-const getLogListWithHeadTag = (data) => {
-  const logList = data.map((log) => {
-    const { hash, branchName1: branch, parents } = log;
-    const newLog = {
-      ...log,
-      head: false,
-      parents: parents.split(' '),
-    };
-
-    if (branch.length) {
-      for (let i = 0; i < data.length; i += 1) {
-        if (data[i].parents.includes(hash)) {
-          return newLog;
-        }
-      }
-
-      return {
-        ...newLog,
-        head: true,
-      };
-    }
-
-    return newLog;
-  });
-
-  logList[logList.length - 1].parents = [];
-
-  return logList;
-};
-
 const deleteDeactivatedPipe = (
   activatedPipeList,
   activatedPipeRootList,
@@ -58,45 +28,57 @@ const deleteDeactivatedPipe = (
   return [clonedActivatedPipeList, clonedActivatedPipeRootList];
 };
 
-const graphDataGenerator = (data) => {
-  const logList = getLogListWithHeadTag(data);
-  const initialActivatedPipeList = [0];
-  const initialActivatedPipeRootList = [];
+const addHeadProperty = (logListData) => {
+  const logList = logListData.map((log) => {
+    const { hash, branchName1: branch, parents } = log;
+    const newLog = {
+      ...log,
+      head: false,
+      parents: parents.split(' '),
+    };
 
-  const nodeList = new Array(logList.length);
+    if (branch.length) {
+      for (let i = 0; i < logListData.length; i += 1) {
+        if (logListData[i].parents.includes(hash)) {
+          return newLog;
+        }
+      }
 
-  const graphDataListWithPosition = logList.reduce(
+      return {
+        ...newLog,
+        head: true,
+      };
+    }
+
+    return newLog;
+  });
+
+  logList[logList.length - 1].parents = [];
+
+  return logList;
+};
+
+const addPositionProperty = (
+  logList,
+  nodeList,
+  initialActivatedPipeList,
+  initialActivatedPipeRootList
+) => {
+  const modifiedGraphData = logList.reduce(
     (acc, log, index, clonedLogList) => {
       const { clonedNodeData } = acc;
       const { head, parents } = log;
 
-      // 부모가 없는 노드(initial commit)일 시 중단
       if (!parents.length) {
         return clonedNodeData;
       }
 
-      // *
-      // |\
-      // | *
-      // | |
-      // | *
-      // |/
-      // *  <- 이렇게 합쳐지는 경우 이전에 생성(활성화)되어있던 파이프를 삭제
       const [activatedPipeList, activatedPipeRootList] = deleteDeactivatedPipe(
         acc.activatedPipeList,
         acc.activatedPipeRootList,
         log
       );
 
-      //
-      // * <- 위쪽에 더 이상 연결된 노드가 없는 노드가 생성되는 경우
-      // |
-      // |
-      // *
-      // |
-      // |
-      // *
-      // 새로운 파이프라인 생성
       if (head) {
         const newPosition = activatedPipeList.length;
         activatedPipeList[activatedPipeList.length] = newPosition;
@@ -106,19 +88,16 @@ const graphDataGenerator = (data) => {
         };
       }
 
-      //  왼쪽 부모 인덱스
       const sameBranchParentIndex = clonedLogList.findIndex(
         (targetLog) => targetLog.hash === parents[0]
       );
-      // 오른쪽 부모의 인덱스
+
       const otherBranchParentIndex = clonedLogList.findIndex(
         (targetLog) => targetLog.hash === parents[1]
       );
 
       if (parents.length === 1) {
-        // 부모가 하나인 경우
         if (!clonedNodeData[sameBranchParentIndex]) {
-          // 부모의 노드에 이미 데이터가 있는 경우
           clonedNodeData[sameBranchParentIndex] = {
             position: clonedNodeData[index].position,
             ...clonedLogList[sameBranchParentIndex],
@@ -145,9 +124,7 @@ const graphDataGenerator = (data) => {
           }
         }
       } else if (parents.length === 2) {
-        // 부모가 여럿(2)인 경우
         if (!clonedNodeData[sameBranchParentIndex]) {
-          // 바로 같은 직선 아래에 있는 노드에 데이터가 없는 경우
           clonedNodeData[sameBranchParentIndex] = {
             position: clonedNodeData[index].position,
             ...clonedLogList[sameBranchParentIndex],
@@ -160,7 +137,6 @@ const graphDataGenerator = (data) => {
         }
 
         if (!clonedNodeData[otherBranchParentIndex]) {
-          // 대각으로 아래에 있는 노드에 데이터가 없는 경우
           const newPosition = activatedPipeList.length;
           activatedPipeList[activatedPipeList.length] = newPosition;
           clonedNodeData[otherBranchParentIndex] = {
@@ -179,19 +155,39 @@ const graphDataGenerator = (data) => {
     }
   );
 
-  // color property 추가
-  const graphDataWithColor = graphDataListWithPosition.map(
-    (graphDataWithPosition) => {
-      const newGraphDataWithColor = graphDataWithPosition;
-      newGraphDataWithColor.color =
-        GRAPH_COLOR_LIST[
-          newGraphDataWithColor.position % GRAPH_COLOR_LIST.length
-        ];
-      return newGraphDataWithColor;
-    }
+  return modifiedGraphData;
+};
+
+const addColorProperty = (graphData) => {
+  const modifiedGraphData = graphData.map((graphDataWithPosition) => {
+    const newGraphDataWithColor = graphDataWithPosition;
+    newGraphDataWithColor.color =
+      GRAPH_COLOR_LIST[
+        newGraphDataWithColor.position % GRAPH_COLOR_LIST.length
+      ];
+    return newGraphDataWithColor;
+  });
+
+  return modifiedGraphData;
+};
+
+const graphDataGenerator = (logListData) => {
+  const logList = addHeadProperty(logListData);
+  const initialActivatedPipeList = [0];
+  const initialActivatedPipeRootList = [];
+
+  const nodeList = new Array(logList.length);
+
+  const graphData = addPositionProperty(
+    logList,
+    nodeList,
+    initialActivatedPipeList,
+    initialActivatedPipeRootList
   );
 
-  return graphDataWithColor;
+  const modifiedGraphData = addColorProperty(graphData);
+
+  return modifiedGraphData;
 };
 
 module.exports = graphDataGenerator;

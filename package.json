@@ -6,7 +6,7 @@
     "start": "node ./bin/www",
     "dev": "nodemon ./bin/www",
     "prepare": "husky install",
-    "pre-commit": "lint-staged && rm -rf .git/hooks && ln -s ../.husky .git/hooks"
+    "pre-commit": "lint-staged"
   },
   "dependencies": {
     "cors": "^2.8.5",
