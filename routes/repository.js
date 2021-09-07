@@ -5,10 +5,33 @@ const simpleGit = require('simple-git');
 const createError = require('http-errors');
 
 const router = express.Router();
-const repoUrlValidator = require('../middlewares/repoUrlValidator');
-const { changeBranchNameFormat, getRepoName } = require('../utils');
+
+const {
+  changeBranchNameFormat,
+  getRepoName,
+  getDiff,
+} = require('../utils');
 const ERROR = require('../constants/error');
 const GIT = require('../constants/git');
+const repoUrlValidator = require('../middlewares/repoUrlValidator');
+
+router.get('/diff', async (req, res, next) => {
+  const { hostName, userName, repoName, commitHash } = req.query;
+
+  const url = `http://${hostName}.com/${userName}/${repoName}/commit/${commitHash}.diff`;
+
+  const result = {
+    changedFileList: [],
+  };
+
+  try {
+    const { data } = await getDiff(url);
+  } catch (err) {
+    next(err);
+  }
+
+  res.status(200).json(result);
+});
 
 router.get('/', repoUrlValidator, async (req, res, next) => {
   const logOption = [GIT.LOG_OPTION_ALL];
