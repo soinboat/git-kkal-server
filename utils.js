@@ -34,9 +34,18 @@ const getDiff = async (url) => {
   }
 };
 
+const getFileName = (file) => {
+  const result = file.split('\n')[0].split(' b/')[1];
+
+  // TODO: encoding issue
+
+  return result;
+};
+
 module.exports = {
   hasGitExtension,
   getRepoName,
   changeBranchNameFormat,
   getDiff,
+  getFileName,
 };
