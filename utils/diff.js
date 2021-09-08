@@ -1,26 +1,5 @@
-const { cloneDeep } = require('lodash');
-
-const GIT = require('./constants/git');
-const REGEX = require('./constants/regex');
-const { AT_SIGN_END, AT_SIGN_BEGIN } = require('./constants/stringProcessing');
-const STRING_PROCESSING = require('./constants/stringProcessing');
-
-const hasGitExtension = (repoName) => repoName.slice(-4) === GIT.GIT_EXTENSION;
-
-const getRepoName = (repoUrl) =>
-  hasGitExtension(repoUrl.split('/')[4])
-    ? repoUrl.split('/')[4].slice(0, -4)
-    : repoUrl.split('/')[4];
-
-const changeBranchNameFormat = (logList) =>
-  cloneDeep(logList).map((log) => {
-    const splittedBranchName = log.branchName2.split('/');
-
-    return {
-      ...log,
-      branchName2: splittedBranchName[splittedBranchName.length - 1],
-    };
-  });
+const REGEX = require('../constants/regex');
+const STRING_PROCESSING = require('../constants/stringProcessing');
 
 const getFileName = (file) => {
   const result = file.split('\n')[0].split(' b/')[1];
@@ -71,8 +50,8 @@ const getChangedFilePosition = (file, regex) => {
 
     const [matchedString] = execResultArray;
     const lineNumbers = matchedString.slice(
-      AT_SIGN_BEGIN.length,
-      -AT_SIGN_END.length
+      STRING_PROCESSING.AT_SIGN_BEGIN.length,
+      -1 * STRING_PROCESSING.AT_SIGN_END.length
     );
 
     const minusIndex = lineNumbers.indexOf(STRING_PROCESSING.MINUS);
@@ -106,7 +85,6 @@ const divideLog = (logList) => {
 const getChangedFileLog = (file, changedFileInfoList) => {
   const result = [...changedFileInfoList];
 
-  /* eslint no-plusplus: ["error", { "allowForLoopAfterthoughts": true }] */
   for (let i = 0; i < result.length; i++) {
     const currIndex = result[i].index;
     const nextIndex =
@@ -162,8 +140,5 @@ const parseDiffToObject = (fileList) => {
 };
 
 module.exports = {
-  hasGitExtension,
-  getRepoName,
-  changeBranchNameFormat,
   parseDiffToObject,
 };

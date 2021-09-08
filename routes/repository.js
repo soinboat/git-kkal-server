@@ -6,16 +6,17 @@ const createError = require('http-errors');
 
 const router = express.Router();
 
-const {
-  changeBranchNameFormat,
-  getRepoName,
-  parseDiffToObject,
-} = require('../utils');
+const repoUrlValidator = require('../middlewares/repoUrlValidator');
+
 const { getDiff } = require('./controller/repository.controller');
+
+const { changeBranchNameFormat, getRepoName } = require('../utils/git');
+const graphDataGenerator = require('../utils/graphDataGenerator');
+const { parseDiffToObject } = require('../utils/diff');
+
+const STRING_PROCESSING = require('../constants/stringProcessing');
 const ERROR = require('../constants/error');
 const GIT = require('../constants/git');
-const repoUrlValidator = require('../middlewares/repoUrlValidator');
-const STRING_PROCESSING = require('../constants/stringProcessing');
 
 router.get('/diff', async (req, res, next) => {
   const { hostName, userName, repoName, commitHash } = req.query;
@@ -77,7 +78,7 @@ router.get('/', repoUrlValidator, async (req, res, next) => {
 
     const data = {
       repoName,
-      branchList: formattedLogList,
+      logList: graphDataGenerator(formattedLogList),
     };
 
     fs.rmdir(`./${repoName}`, { recursive: true }, (err) => {

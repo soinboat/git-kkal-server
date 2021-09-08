@@ -10,6 +10,6 @@ module.exports = {
   },
   rules: {
     'consistent-return': 'off',
+    'no-plusplus': ['error', { allowForLoopAfterthoughts: true }],
   },
 };
-// eslint-disable-next-line consistent-return
