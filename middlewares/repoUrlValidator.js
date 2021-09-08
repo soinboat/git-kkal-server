@@ -8,6 +8,11 @@ const { getRepoName } = require('../utils/git');
 const repoUrlValidator = (req, res, next) => {
   try {
     const { repoUrl } = req.query;
+
+    if (!repoUrl) {
+      throw createError(400, ERROR.INVALID_REPO_URL);
+    }
+
     const repoUrlLength = repoUrl.split('/').length;
 
     if (!repoUrl.trim()) {

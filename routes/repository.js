@@ -51,11 +51,10 @@ router.get('/', repoUrlValidator, async (req, res, next) => {
     format: GIT.PRETTY_FORMAT_OPTIONS,
   };
 
+  const { repoUrl } = req.query;
+  const repoName = getRepoName(repoUrl);
+
   try {
-    const { repoUrl } = req.query;
-
-    const repoName = getRepoName(repoUrl);
-
     try {
       await simpleGit().clone(repoUrl, cloneOption);
     } catch (err) {
@@ -89,7 +88,9 @@ router.get('/', repoUrlValidator, async (req, res, next) => {
       res.status(200).json(data);
     });
   } catch (err) {
-    next(err);
+    fs.rmdir(`./${repoName}`, { recursive: true }, () => {
+      next(err);
+    });
   }
 });
 
