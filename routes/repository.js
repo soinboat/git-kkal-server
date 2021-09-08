@@ -19,9 +19,9 @@ const ERROR = require('../constants/error');
 const GIT = require('../constants/git');
 
 router.get('/diff', async (req, res, next) => {
-  const { hostName, userName, repoName, commitHash } = req.query;
+  const { repoUrl, commitHash } = req.query;
 
-  const url = `http://${hostName}.com/${userName}/${repoName}/commit/${commitHash}.diff`;
+  const url = `${repoUrl}/commit/${commitHash}.diff`;
 
   const result = {
     changedFileList: [],
