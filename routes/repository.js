@@ -5,11 +5,44 @@ const simpleGit = require('simple-git');
 const createError = require('http-errors');
 
 const router = express.Router();
+
 const repoUrlValidator = require('../middlewares/repoUrlValidator');
-const graphDataGenerator = require('../utils/graphDataGenerator');
+
+const { getDiff } = require('./controller/repository.controller');
+
 const { changeBranchNameFormat, getRepoName } = require('../utils/git');
+const graphDataGenerator = require('../utils/graphDataGenerator');
+const { parseDiffToObject } = require('../utils/diff');
+
+const STRING_PROCESSING = require('../constants/stringProcessing');
 const ERROR = require('../constants/error');
 const GIT = require('../constants/git');
+
+router.get('/diff', async (req, res, next) => {
+  const { hostName, userName, repoName, commitHash } = req.query;
+
+  const url = `http://${hostName}.com/${userName}/${repoName}/commit/${commitHash}.diff`;
+
+  const result = {
+    changedFileList: [],
+  };
+
+  try {
+    const { data } = await getDiff(url);
+
+    const fileList = data.split(STRING_PROCESSING.DIFF_GIT).slice(1);
+
+    if (!fileList.length) {
+      throw createError(500, ERROR.FILE_NOT_FOUND);
+    }
+
+    result.changedFileList = parseDiffToObject(fileList);
+
+    res.status(200).json(result);
+  } catch (err) {
+    next(err);
+  }
+});
 
 router.get('/', repoUrlValidator, async (req, res, next) => {
   const logOption = [GIT.LOG_OPTION_ALL];

@@ -1,4 +1,5 @@
 const { cloneDeep } = require('lodash');
+
 const GIT = require('../constants/git');
 
 const hasGitExtension = (repoName) => repoName.slice(-4) === GIT.GIT_EXTENSION;
