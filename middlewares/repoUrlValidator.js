@@ -3,7 +3,7 @@ const createError = require('http-errors');
 
 const GIT = require('../constants/git');
 const ERROR = require('../constants/error');
-const { getRepoName } = require('../utils');
+const { getRepoName } = require('../utils/git');
 
 const repoUrlValidator = (req, res, next) => {
   try {
