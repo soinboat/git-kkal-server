@@ -126,8 +126,9 @@ const parseDiffToObject = (fileList) => {
     );
 
     const changedLog = changedFileInfoAndLogList.map(
-      ({ codeBeginHunk, before, after }) => ({
+      ({ codeBeginHunk, matchedString, before, after }) => ({
         codeBeginHunk,
+        codeLineOffsetString: matchedString,
         before,
         after,
       })
