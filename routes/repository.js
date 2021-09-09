@@ -33,7 +33,7 @@ router.get('/diff', async (req, res, next) => {
     const fileList = data.split(STRING_PROCESSING.DIFF_GIT).slice(1);
 
     if (!fileList.length) {
-      throw createError(500, ERROR.FILE_NOT_FOUND);
+      return res.status(200).json(result);
     }
 
     result.changedFileList = parseDiffToObject(fileList);
