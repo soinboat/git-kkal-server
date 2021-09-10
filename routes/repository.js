@@ -10,8 +10,9 @@ const repoUrlValidator = require('../middlewares/repoUrlValidator');
 
 const { getDiff } = require('./controller/repository.controller');
 
-const { changeBranchNameFormat, getRepoName } = require('../utils/git');
 const graphDataGenerator = require('../utils/graphDataGenerator');
+const lindDataGenerator = require('../utils/lineDataGenerator');
+const { changeBranchNameFormat, getRepoName } = require('../utils/git');
 const { parseDiffToObject } = require('../utils/diff');
 
 const STRING_PROCESSING = require('../constants/stringProcessing');
@@ -67,9 +68,12 @@ router.get('/', repoUrlValidator, async (req, res, next) => {
       throw createError(400, ERROR.GIT_NOT_FOUND);
     }
 
-    const { all: logList } = await clonedGit.log(logOption, formatOptions);
+    const { all: logListData } = await clonedGit.log(logOption, formatOptions);
 
-    const formattedLogList = changeBranchNameFormat(logList);
+    const formattedLogList = changeBranchNameFormat(logListData);
+
+    const logList = graphDataGenerator(formattedLogList);
+    const lineList = lindDataGenerator(logList);
 
     if (!logList) {
       throw createError(401, ERROR.FAIL_TO_LOG);
@@ -77,7 +81,8 @@ router.get('/', repoUrlValidator, async (req, res, next) => {
 
     const data = {
       repoName,
-      logList: graphDataGenerator(formattedLogList),
+      logList,
+      lineList,
     };
 
     fs.rmdir(`./${repoName}`, { recursive: true }, (err) => {
