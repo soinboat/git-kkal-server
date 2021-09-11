@@ -58,6 +58,19 @@ const addHeadProperty = (logListData) => {
   return logList;
 };
 
+const addColorProperty = (graphData) => {
+  const modifiedGraphData = graphData.map((graphDataWithPosition) => {
+    const newGraphDataWithColor = graphDataWithPosition;
+    newGraphDataWithColor.color =
+      GRAPH_COLOR_LIST[
+        newGraphDataWithColor.position % GRAPH_COLOR_LIST.length
+      ];
+    return newGraphDataWithColor;
+  });
+
+  return modifiedGraphData;
+};
+
 const addPositionProperty = (
   logList,
   nodeList,
@@ -67,11 +80,8 @@ const addPositionProperty = (
   const modifiedGraphData = logList.reduce(
     (acc, log, index, clonedLogList) => {
       const { clonedNodeData } = acc;
+      let { nextPipeLineIndex } = acc;
       const { head, parents } = log;
-
-      if (!parents.length) {
-        return clonedNodeData;
-      }
 
       const [activatedPipeList, activatedPipeRootList] = deleteDeactivatedPipe(
         acc.activatedPipeList,
@@ -80,10 +90,13 @@ const addPositionProperty = (
       );
 
       if (head) {
-        const newPosition = activatedPipeList.length;
+        const newPosition = nextPipeLineIndex;
         activatedPipeList[activatedPipeList.length] = newPosition;
+        nextPipeLineIndex += 1;
         clonedNodeData[index] = {
-          position: newPosition,
+          position: activatedPipeList.findIndex(
+            (activatedPipe) => activatedPipe === newPosition
+          ),
           ...clonedLogList[index],
         };
       }
@@ -103,11 +116,6 @@ const addPositionProperty = (
             ...clonedLogList[samePipeParentIndex],
           };
         } else {
-          clonedNodeData[samePipeParentIndex].position = Math.min(
-            clonedNodeData[samePipeParentIndex].position,
-            clonedNodeData[index].position
-          );
-
           const targetIndex = activatedPipeRootList.findIndex(
             (target) => target.newPipeRootHash === parents[0]
           );
@@ -115,13 +123,23 @@ const addPositionProperty = (
           if (targetIndex < 0) {
             activatedPipeRootList.push({
               newPipeRootHash: parents[0],
-              connectedPipe: [clonedNodeData[index]?.position],
+              connectedPipe: [
+                Math.max(
+                  clonedNodeData[index].position,
+                  clonedNodeData[samePipeParentIndex].position
+                ),
+              ],
+              index,
             });
           } else {
             activatedPipeRootList[targetIndex].connectedPipe.push(
               clonedNodeData[index].position
             );
           }
+          clonedNodeData[samePipeParentIndex].position = Math.min(
+            clonedNodeData[samePipeParentIndex].position,
+            clonedNodeData[index].position
+          );
         }
       } else if (parents.length === 2) {
         if (!clonedNodeData[samePipeParentIndex]) {
@@ -137,7 +155,8 @@ const addPositionProperty = (
         }
 
         if (!clonedNodeData[otherPipeParentIndex]) {
-          const newPosition = activatedPipeList.length;
+          const newPosition = nextPipeLineIndex;
+          nextPipeLineIndex += 1;
           activatedPipeList[activatedPipeList.length] = newPosition;
           clonedNodeData[otherPipeParentIndex] = {
             position: activatedPipeList[activatedPipeList.length - 1],
@@ -146,29 +165,26 @@ const addPositionProperty = (
         }
       }
 
-      return { clonedNodeData, activatedPipeList, activatedPipeRootList };
+      clonedNodeData[index].position = activatedPipeList.findIndex(
+        (number) => number === clonedNodeData[index].position
+      );
+
+      return {
+        clonedNodeData,
+        activatedPipeList,
+        activatedPipeRootList,
+        nextPipeLineIndex,
+      };
     },
     {
-      clonedNodeData: nodeList,
+      clonedNodeData: [],
       activatedPipeList: initialActivatedPipeList,
       activatedPipeRootList: initialActivatedPipeRootList,
+      nextPipeLineIndex: 1,
     }
   );
 
-  return modifiedGraphData;
-};
-
-const addColorProperty = (graphData) => {
-  const modifiedGraphData = graphData.map((graphDataWithPosition) => {
-    const newGraphDataWithColor = graphDataWithPosition;
-    newGraphDataWithColor.color =
-      GRAPH_COLOR_LIST[
-        newGraphDataWithColor.position % GRAPH_COLOR_LIST.length
-      ];
-    return newGraphDataWithColor;
-  });
-
-  return modifiedGraphData;
+  return modifiedGraphData.clonedNodeData;
 };
 
 const graphDataGenerator = (logListData) => {
