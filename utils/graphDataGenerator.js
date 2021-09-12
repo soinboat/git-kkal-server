@@ -58,8 +58,8 @@ const addHeadProperty = (logListData) => {
   return logList;
 };
 
-const addColorProperty = (position, colorList) => {
-  const color = colorList[position % colorList.length];
+const addColorProperty = (position) => {
+  const color = GRAPH_COLOR_LIST[position % GRAPH_COLOR_LIST.length];
   return color;
 };
 
@@ -158,8 +158,7 @@ const addPositionProperty = (
       }
 
       clonedNodeData[index].color = addColorProperty(
-        clonedNodeData[index].position,
-        GRAPH_COLOR_LIST
+        clonedNodeData[index].position
       );
       clonedNodeData[index].position = activatedPipeList.findIndex(
         (number) => number === clonedNodeData[index].position
