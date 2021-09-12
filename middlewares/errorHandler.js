@@ -1,7 +1,6 @@
-/* eslint-disable no-unused-vars */
 const ERROR = require('../constants/error');
 
-const errorHandler = (err, req, res, next) => {
+const errorHandler = (err, req, res, _) => {
   if (!err.status) {
     res.locals.message = ERROR.INTERNAL_SERVER_ERROR;
   } else {
