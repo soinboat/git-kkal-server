@@ -11,5 +11,6 @@ module.exports = {
   rules: {
     'consistent-return': 'off',
     'no-plusplus': ['error', { allowForLoopAfterthoughts: true }],
+    'no-unused-vars': 'off',
   },
 };
