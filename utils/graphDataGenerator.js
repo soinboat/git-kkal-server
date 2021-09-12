@@ -58,17 +58,9 @@ const addHeadProperty = (logListData) => {
   return logList;
 };
 
-const addColorProperty = (graphData) => {
-  const modifiedGraphData = graphData.map((graphDataWithPosition) => {
-    const newGraphDataWithColor = graphDataWithPosition;
-    newGraphDataWithColor.color =
-      GRAPH_COLOR_LIST[
-        newGraphDataWithColor.position % GRAPH_COLOR_LIST.length
-      ];
-    return newGraphDataWithColor;
-  });
-
-  return modifiedGraphData;
+const addColorProperty = (position, colorList) => {
+  const color = colorList[position % colorList.length];
+  return color;
 };
 
 const addPositionProperty = (
@@ -165,10 +157,13 @@ const addPositionProperty = (
         }
       }
 
+      clonedNodeData[index].color = addColorProperty(
+        clonedNodeData[index].position,
+        GRAPH_COLOR_LIST
+      );
       clonedNodeData[index].position = activatedPipeList.findIndex(
         (number) => number === clonedNodeData[index].position
       );
-
       return {
         clonedNodeData,
         activatedPipeList,
@@ -188,7 +183,11 @@ const addPositionProperty = (
 };
 
 const graphDataGenerator = (logListData) => {
-  const logList = addHeadProperty(logListData);
+  const logList = addHeadProperty(logListData).map((log, index) => {
+    const logClone = { ...log };
+    logClone.index = index;
+    return logClone;
+  });
   const initialActivatedPipeList = [0];
   const initialActivatedPipeRootList = [];
 
@@ -201,9 +200,7 @@ const graphDataGenerator = (logListData) => {
     initialActivatedPipeRootList
   );
 
-  const modifiedGraphData = addColorProperty(graphData);
-
-  return modifiedGraphData;
+  return graphData;
 };
 
 module.exports = graphDataGenerator;

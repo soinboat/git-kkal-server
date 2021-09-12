@@ -6,6 +6,9 @@ const GRAPH_COLOR_LIST = [
   'blue',
   'indigo',
   'purple',
+  'Azure',
+  'Brown',
+  'Chocolate',
 ];
 
 module.exports = GRAPH_COLOR_LIST;
