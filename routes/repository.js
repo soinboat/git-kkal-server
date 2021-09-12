@@ -59,7 +59,7 @@ router.get('/', repoUrlValidator, async (req, res, next) => {
     try {
       await simpleGit().clone(repoUrl, cloneOption);
     } catch (err) {
-      throw createError(500, ERROR.FAIL_TO_CLONE);
+      throw createError(400, ERROR.FAIL_TO_CLONE);
     }
 
     const clonedGit = await simpleGit(path.resolve(`./${repoName}`));
