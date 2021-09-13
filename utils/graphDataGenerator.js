@@ -30,7 +30,7 @@ const deleteDeactivatedPipe = (
 
 const addHeadProperty = (logListData) => {
   const logList = logListData.map((log) => {
-    const { hash, branchName1: branch, parents } = log;
+    const { hash, branchNames: branch, parents } = log;
     const newLog = {
       ...log,
       head: false,
@@ -62,11 +62,11 @@ const modifyFormat = (logListData) => {
   const logList = logListData.map((log, index) => {
     const logClone = { ...log };
     const branchName =
-      log.branchName1 === ''
+      log.branchNames === ''
         ? null
-        : log.branchName1.trim().slice(1).slice(0, -1).split(',');
+        : log.branchNames.trim().slice(1).slice(0, -1).split(',');
     logClone.index = index;
-    logClone.branchName1 = branchName;
+    logClone.branchNames = branchName;
 
     return logClone;
   });
