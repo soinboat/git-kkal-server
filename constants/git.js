@@ -10,7 +10,7 @@ const GIT = {
     committedTime: '%cI',
     parents: '%P',
     hash: '%H',
-    branchName1: '%d',
+    branchNames: '%d',
     branchName2: '%S',
   },
   GIT_EXTENSION: '.git',
