@@ -58,6 +58,22 @@ const addHeadProperty = (logListData) => {
   return logList;
 };
 
+const modifyFormat = (logListData) => {
+  const logList = logListData.map((log, index) => {
+    const logClone = { ...log };
+    const branchName =
+      log.branchName1 === ''
+        ? null
+        : log.branchName1.trim().slice(1).slice(0, -1).split(',');
+    logClone.index = index;
+    logClone.branchName1 = branchName;
+
+    return logClone;
+  });
+
+  return logList;
+};
+
 const addColorProperty = (position) => {
   const color = GRAPH_COLOR_LIST[position % GRAPH_COLOR_LIST.length];
   return color;
@@ -182,18 +198,16 @@ const addPositionProperty = (
 };
 
 const graphDataGenerator = (logListData) => {
-  const logList = addHeadProperty(logListData).map((log, index) => {
-    const logClone = { ...log };
-    logClone.index = index;
-    return logClone;
-  });
+  const logList = addHeadProperty(logListData);
+  const modifiedLogList = modifyFormat(logList);
+
   const initialActivatedPipeList = [0];
   const initialActivatedPipeRootList = [];
 
-  const nodeList = new Array(logList.length);
+  const nodeList = new Array(modifiedLogList.length);
 
   const graphData = addPositionProperty(
-    logList,
+    modifiedLogList,
     nodeList,
     initialActivatedPipeList,
     initialActivatedPipeRootList
