@@ -98,8 +98,8 @@ const addHeadProperty = (logListData) => {
   return logList;
 };
 
-const addColorProperty = (position, colorList) => {
-  const color = colorList[position % colorList.length];
+const addColorProperty = (position) => {
+  const color = GRAPH_COLOR_LIST[position % GRAPH_COLOR_LIST.length];
   return color;
 };
 
@@ -193,6 +193,9 @@ const addPositionProperty = (
           (number) => number === clonedNodeDataList[index].position
         );
 
+        clonedNodeDataList[index].color = addColorProperty(
+          clonedNodeDataList[index].position
+        );
         return {
           clonedNodeDataList,
           activatedPipeList: tempActivatedPipeList,
@@ -309,8 +312,7 @@ const addPositionProperty = (
       }
 
       clonedNodeDataList[index].color = addColorProperty(
-        clonedNodeDataList[index].position,
-        GRAPH_COLOR_LIST
+        clonedNodeDataList[index].position
       );
 
       return {
