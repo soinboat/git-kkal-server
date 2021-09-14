@@ -2,6 +2,8 @@ require('dotenv').config();
 const express = require('express');
 const createError = require('http-errors');
 const cors = require('cors');
+const timeout = require('connect-timeout');
+
 const loaders = require('./loaders');
 
 const repository = require('./routes/repository');
@@ -18,6 +20,13 @@ app.use(
     credentials: true,
   })
 );
+
+const haltOnTimedout = (req, res, next) => {
+  if (!req.timedout) next();
+};
+
+app.use(timeout('4s'));
+app.use(haltOnTimedout);
 
 app.use('/repository', repository);
 

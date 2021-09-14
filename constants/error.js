@@ -7,6 +7,7 @@ const ERROR = {
   FAIL_TO_LOG: 'Failed to log',
   FAIL_TO_DELETE_CLONED_DIRECTORY: 'Failed to delete cloned directory',
   FAIL_TO_GET_DIFF: 'Failed to get diff',
+  FAIL_TO_MAKE_GRAPH_DATA: 'Failed to make graph data',
   FILE_NOT_FOUND: 'File not found',
 };
 

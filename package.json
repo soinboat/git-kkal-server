@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "axios": "^0.21.3",
+    "connect-timeout": "^1.9.0",
     "cors": "^2.8.5",
     "debug": "~2.6.9",
     "dotenv": "^10.0.0",
