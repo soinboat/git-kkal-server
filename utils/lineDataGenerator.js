@@ -1,8 +1,3 @@
-const convertGraphPosition = (position) => {
-  const INTERVAL = 50;
-  return position * INTERVAL;
-};
-
 const lineDataGenerator = (logListData) => {
   const SLOPE = 20;
   const logListObject = {};
@@ -12,16 +7,10 @@ const lineDataGenerator = (logListData) => {
 
   const lineData = logListData
     .map((node, index) => {
-      const from = [
-        convertGraphPosition(node.position - 1),
-        convertGraphPosition(index),
-      ];
+      const from = [node.position, index];
       const rawLineData = node.parents.map((parent, _, parentsClone) => {
         const parentNode = logListObject[parent];
-        const to = [
-          convertGraphPosition(parentNode.position - 1),
-          convertGraphPosition(parentNode.index),
-        ];
+        const to = [parentNode.position, parentNode.index];
         const color =
           node.position > parentNode.position ? node.color : parentNode.color;
         const singleLineData = { color, points: [from] };

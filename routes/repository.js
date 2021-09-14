@@ -72,7 +72,7 @@ router.get('/', repoUrlValidator, async (req, res, next) => {
 
     const formattedLogList = changeBranchNameFormat(logListData);
 
-    const logList = graphDataGenerator(formattedLogList);
+    const { logList, maxPipeCount } = graphDataGenerator(formattedLogList);
     const lineList = lindDataGenerator(logList);
 
     if (!logList) {
@@ -81,6 +81,7 @@ router.get('/', repoUrlValidator, async (req, res, next) => {
 
     const data = {
       repoName,
+      maxPipeCount,
       logList,
       lineList,
     };
