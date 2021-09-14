@@ -4,9 +4,13 @@ module.exports = {
     commonjs: true,
     es2021: true,
   },
-  extends: ['airbnb-base'],
+  extends: ['airbnb-base', 'prettier'],
   parserOptions: {
     ecmaVersion: 12,
   },
-  rules: {},
+  rules: {
+    'consistent-return': 'off',
+    'no-plusplus': ['error', { allowForLoopAfterthoughts: true }],
+    'no-unused-vars': 'off',
+  },
 };
