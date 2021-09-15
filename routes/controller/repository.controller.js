@@ -75,7 +75,6 @@ const getRepoData = async (req, res, next) => {
     try {
       const { logList, maxPipeCount } = graphDataGenerator(formattedLogList);
       const lineList = lindDataGenerator(logList);
-
       data.maxPipeCount = maxPipeCount;
       data.logList = logList;
       data.lineList = lineList;
