@@ -11,7 +11,7 @@ const getDiff = async (url) => {
     return data;
   } catch (err) {
     if (err.response) {
-      throw createError(500, ERROR.FAIL_TO_GET_DIFF);
+      throw createError(404, ERROR.FAIL_TO_GET_DIFF);
     }
   }
 };
