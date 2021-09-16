@@ -1,11 +1,23 @@
+const createError = require('http-errors');
+const axios = require('axios');
 const REGEX = require('../constants/regex');
+const ERROR = require('../constants/error');
 const STRING_PROCESSING = require('../constants/stringProcessing');
+
+const getDiff = async (url) => {
+  try {
+    const data = await axios.get(url);
+
+    return data;
+  } catch (err) {
+    if (err.response) {
+      throw createError(404, ERROR.FAIL_TO_GET_DIFF);
+    }
+  }
+};
 
 const getFileName = (file) => {
   const result = file.split('\n')[0].split(' b/')[1];
-
-  // TODO: encoding issue
-
   return result;
 };
 
@@ -142,4 +154,5 @@ const parseDiffToObject = (fileList) => {
 
 module.exports = {
   parseDiffToObject,
+  getDiff,
 };

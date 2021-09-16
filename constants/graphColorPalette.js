@@ -8,7 +8,11 @@ const GRAPH_COLOR_LIST = [
   'purple',
   'Azure',
   'Brown',
+  'FireBrick',
   'Chocolate',
+  'Aquamarine',
+  'DarkOrchid',
+  'CadetBlue',
 ];
 
 module.exports = GRAPH_COLOR_LIST;
