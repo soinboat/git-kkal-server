@@ -1,6 +1,7 @@
 const request = require('supertest');
 const { expect } = require('chai');
 const app = require('../app');
+
 const MOCK_REPO_DATA = JSON.stringify(require('./repoData.json'));
 
 const MOCK_REPO_URL = 'https://github.com/chiwon1/git-kkal-server-test-mock-up';
@@ -31,6 +32,11 @@ describe('GET `/repository`', () => {
     request(app)
       .get(`/repository?repoUrl=${INVALID_REPO_URL}`)
       .expect(400)
-      .end(done);
+      .end((err, res) => {
+        if (err) return done(err);
+
+        expect(res.body).to.eql({ error: 'Fail to clone' });
+        done();
+      });
   });
 });

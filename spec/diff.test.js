@@ -1,6 +1,7 @@
 const request = require('supertest');
 const { expect } = require('chai');
 const app = require('../app');
+
 const MOCK_DIFF_DATA = JSON.stringify(require('./diffData.json'));
 
 const MOCK_REPO_URL = 'https://github.com/chiwon1/git-kkal-server-test-mock-up';
@@ -39,6 +40,11 @@ describe('GET `/repository/diff`', () => {
         `/repository/diff?repoUrl=${MOCK_REPO_URL}&commitHash=${INVALID_COMMIT_HASH}`
       )
       .expect(404)
-      .end(done);
+      .end((err, res) => {
+        if (err) return done(err);
+
+        expect(res.body).to.eql({ error: 'Failed to get diff' });
+        done();
+      });
   });
 });
