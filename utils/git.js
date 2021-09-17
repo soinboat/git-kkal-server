@@ -12,10 +12,13 @@ const getRepoName = (repoUrl) =>
 const changeBranchNameFormat = (logList) =>
   cloneDeep(logList).map((log) => {
     const splittedBranchName = log.branchName2.split('/');
+    const hasTags = splittedBranchName.some((branch) => branch === 'tags');
 
     return {
       ...log,
-      branchName2: splittedBranchName[splittedBranchName.length - 1],
+      branchName2: hasTags
+        ? null
+        : splittedBranchName[splittedBranchName.length - 1],
     };
   });
 
