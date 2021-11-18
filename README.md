@@ -95,7 +95,7 @@ Test case
 
 - [KANBAN](https://trello.com/b/iKjkI4Ex/git-kkal/calendar-view) 제작 및 스케쥴 관리
 - Team Convention setting
-- Daily scrum log 작성
+- [Daily scrum log](https://www.notion.so/Daily-scrum-67296b8a8ad0410898e8e51f3e086129) 작성
 - get /repository api 구현
 - Client Directory 구조 setting
 - Repository page 구현
@@ -126,7 +126,7 @@ Test case
 
 [KANBAN](https://trello.com/b/iKjkI4Ex/git-kkal/calendar-view)
 
-개발기간 (09.30 ~ 10.17) 총 제작기간 19일
+개발기간 (08.30 ~ 09.17) 총 제작기간 19일
 
 1주차 - 기획, POC
 
@@ -223,8 +223,8 @@ Test case
 
 ## Installation
 
-- FANTASY BASEBALL은 서버가 배포된 사이트입니다.
-- 로컬에서 구동을 원하신 경우 아래와 같이 `.env` 파일 설정이 필요합니다.
+- Git-Kkal은 서버가 배포된 사이트입니다.
+- 로컬에서 구동을 원하시는 경우 아래와 같이 `.env` 파일 설정이 필요합니다.
 
 ### env 설정
 
@@ -335,15 +335,15 @@ Code Mirror
 
 ### 승현
 
-1. Three clean up
+Three clean up
 
-   - Three 로 rendering을 위해 생성해둔 객체들을 clean up 되지 않고 있음
-   - dispose 가능한 방법을 찾아 해결 예정
+- Three 로 rendering을 위해 생성해둔 객체들을 clean up 되지 않고 있음
+- dispose 가능한 방법을 찾아 해결 예정
 
-2. Algorithm refactor
+Algorithm refactor
 
-   - refactor을 통하여 graph rendering algorith의 시간복잡도 개선(현재 logic상 시간복잡도는 O(n^2)
+- refactor을 통하여 graph rendering algorith의 시간복잡도 개선(현재 logic상 시간복잡도는 O(n^2)
 
-3. Large repository
+Large repository
 
-   - 표현해야되는 git log의 양이 1개의 canvas를 초과할 경우, 다수의 canvas에 commit log를 나눠서 render
+- 표현해야되는 git log의 양이 1개의 canvas를 초과할 경우, 다수의 canvas에 commit log를 나눠서 render
